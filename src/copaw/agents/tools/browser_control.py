@@ -236,11 +236,14 @@ def _tool_response(text: str) -> ToolResponse:
 def _chromium_launch_args() -> list[str]:
     """Extra args for Chromium when running in container or Windows."""
     args = []
+    if is_running_in_container() or sys.platform == "win32":
+        args.extend(["--no-sandbox"])
+
     if is_running_in_container():
-        args.extend(["--no-sandbox", "--disable-dev-shm-usage"])
-    # Windows always needs --no-sandbox and --disable-gpu to run properly
+        args.extend(["--disable-dev-shm-usage"])
+    # Windows always needs --disable-gpu to run properly
     if sys.platform == "win32":
-        args.extend(["--no-sandbox", "--disable-gpu"])
+        args.extend(["--disable-gpu"])
     return args
 
 
